@@ -1,0 +1,20 @@
+﻿<Properties StartupConfiguration="{D7DAC197-930A-A60D-812D-2139A5AAFA91}|Unit Tests">
+  <MonoDevelop.Ide.ItemProperties.Match_2203_220Tutorial PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Log">
+    <Files>
+      <File FileName="Assets/Scripts/PersistentData.cs" Line="91" Column="45" />
+      <File FileName="Assets/Scripts/SettingsManager.cs" Line="66" Column="1" />
+      <File FileName="Assets/Scripts/GameBoard.cs" Line="40" Column="75" />
+      <File FileName="Match 3 Tutorial Status" />
+      <File FileName="Log" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <AuthorInfo Name="ultiferrago" Email="tkh0006@auburn.edu" Copyright="" Company="" Trademark="" />
+  <MultiItemStartupConfigurations />
+</Properties>
