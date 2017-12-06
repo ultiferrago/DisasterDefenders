@@ -1,3 +1,5 @@
 # System Dependent *
 *.csproj
 *.sln
+*.userpref
+.collabignore
