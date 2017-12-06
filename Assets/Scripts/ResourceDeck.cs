@@ -6,6 +6,8 @@ using UnityEngine;
 /// Handles the available tiles to be placed onto grid.
 /// </summary>
 public class ResourceDeck {
+    // Settings
+    private PersistentData.Settings _settings = PersistentData.GetSettings();
 
     // Keep a copy of the originals we are using to make our clone army. 
     private GameObject[] _resourcePrefabs;
@@ -16,6 +18,9 @@ public class ResourceDeck {
     // How many times can a card be requested before a reshuffle occurs. (Set to 0 for dynamically set)
     private int _drawsUntilShuffle = 0;
     private int _currentNumOfDraws = 0;
+
+    // Settings
+    private int _numOfEachResourceType { get { return _settings.NumOfDuplicateResourceTypes; } }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="T:ResourceDeck"/> class.
@@ -28,14 +33,13 @@ public class ResourceDeck {
         // Create clones for each of our prefabs
         List<Tile> resourceTileList = new List<Tile>();
 
-        int numOfEachResourceType = PersistentData.GetSettings().NumberOfEachResourceType;
 
-        _drawsUntilShuffle = ( int )System.Math.Ceiling( _resourcePrefabs.Length * numOfEachResourceType * 0.75 );
+        _drawsUntilShuffle = ( int )System.Math.Ceiling( _resourcePrefabs.Length * _numOfEachResourceType * 0.75 );
 
         foreach ( GameObject prefab in _resourcePrefabs ) {
             // Create however many duplicates we want for each prefab.
-            for ( int i = 0; i < numOfEachResourceType; i++ ) {
-                GameObject clone = GameObject.Instantiate( prefab, new Vector3( -10, -10, 0 ), prefab.transform.rotation );
+            for ( int i = 0; i < _numOfEachResourceType; i++ ) {
+                GameObject clone = ( GameObject )Object.Instantiate( prefab, new Vector3( -10, -10, 0 ), prefab.transform.rotation );
                 clone.SetActive( false );
                 Tile cloneTile = new Tile( clone );
                 resourceTileList.Add( cloneTile );

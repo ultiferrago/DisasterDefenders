@@ -7,14 +7,14 @@ using ProgressBar;
 /// </summary>
 public class GameBoard {
 
-    private PersistentData.Settings settings = PersistentData.GetSettings();
+    private static PersistentData.Settings _settings = PersistentData.GetSettings();
 
     // 2D Array storing active locations of tiles.
     private Tile[,] _boardGrid;
 
     // Determines the size of the gameboard.
-    private int _numberOfRows { get { return settings.NumberOfBoardRows; } }
-    private int _numberOfColumns { get { return settings.NumberOfBoardColumns; } }
+    private int _numberOfRows { get { return _settings.NumberOfBoardRows; } }
+    private int _numberOfColumns { get { return _settings.NumberOfBoardColumns; } }
 
     // Our random deck of tiles for replacement purposes.
     private ResourceDeck _resourceDeck;
@@ -28,16 +28,16 @@ public class GameBoard {
 
     // Disaster settings
     //private int _startUpdateTime { get { return settings.InitialDisasterMoveTime; } }
-    private int _disasterMoveTime { get { return settings.DisasterTimeDelta; } }
+    private int _disasterMoveTime { get { return _settings.DisasterTimeDelta; } }
     //private float _updateSpeed;
 
     // Current wave
     private int _wave = 1;
-    private int _wavesPerDisaster;
-    private int _maxDisasters;
+    private int _wavesPerDisaster = _settings.WavesPerAdditionalDisasters;
+    private int _maxDisasters = _settings.MaxActiveDisasters;
 
     // Score stuff
-    private int _scorePerDisaster { get { return settings.ScorePerDisaster; } }
+    private int _scorePerDisaster { get { return _settings.ScorePerDisaster; } }
 
     // Progress bar UI for keeping track of disaster time.
     private ProgressBarBehaviour _progressBar;

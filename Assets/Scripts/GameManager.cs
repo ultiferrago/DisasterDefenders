@@ -33,6 +33,9 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameManager : MonoBehaviour {
 
+    // Game settings
+    private PersistentData.Settings _settings = PersistentData.GetSettings();
+
     // Prefabricated design objects.
     public GameObject[] ResourcePrefabs;
     public GameObject DisasterPrefab;
@@ -88,7 +91,7 @@ public class GameManager : MonoBehaviour {
         gameOver = false;
 
         // Enable debug stuff.
-        if ( PersistentData.GetSettings().DEBUG ) {
+        if ( _settings.DEBUG ) {
             GameObject failObj = GameObject.FindGameObjectWithTag( "FailButton" );
             failObj.SetActive( true );
             failObj.GetComponent<Button>().onClick.AddListener( EndGame );
@@ -219,15 +222,15 @@ public class GameManager : MonoBehaviour {
     /// Creates the gameboard object with appropriate information
     /// </summary>
 	private void CreateGameBoard() {
-        int NumOfEachResource = PersistentData.GetSettings().NumberOfEachResourceType;
-        int Columns = PersistentData.GetSettings().NumberOfColumns;
-        int Rows = PersistentData.GetSettings().NumberOfRows;
+        int columns = _settings.NumberOfBoardColumns;
+        int rows = _settings.NumberOfBoardRows;
+        int duplicateResources = _settings.NumOfDuplicateResourceTypes;
         // Check to make sure params are good
-        if ( NumOfEachResource * ResourcePrefabs.Length < Columns * Rows ) {
+        if ( ResourcePrefabs.Length < columns * rows ) {
             Debug.LogError( "There are not enough duplicate resources to create" +
             "the board. Please increase NumOfEachResource" );
             Application.Quit();
-        } else if ( NumOfEachResource * ResourcePrefabs.Length * 1.5 < Columns * Rows ) {
+        } else if ( duplicateResources * ResourcePrefabs.Length * 1.5 < columns * rows ) {
             Debug.LogWarning( "It is recommended to have atleat 1.5x as many tiles as there are " +
             "available places on the board. This helps ensure that the game isn't too easy" );
         }
@@ -292,18 +295,18 @@ public class GameManager : MonoBehaviour {
     /// Update the wave if applicable.
     /// </summary>
     private void UpdateWave() {
-        if ( PersistentData.GetSettings().ChangeWaveByScore ) {
-            int scorePerWave = PersistentData.GetSettings().ScorePerWaveCompletion;
-            float scoreWaveMultiplier = PersistentData.GetSettings().ScorePerWaveMultiplier;
+        if ( _settings.WaveIncreasesByScore ) {
+            int scorePerWave = _settings.ScorePerWaveIncrease;
+            double multiplier = _settings.ScorePerWaveIncreaseMultiplier;
             // Some random value...
-            if ( _score >= scorePerWave * ( _board.GetCurrentWave() - 1 ) * scoreWaveMultiplier ) {
+            if ( _score >= scorePerWave * ( _board.GetCurrentWave() - 1 ) * multiplier ) {
                 _board.NextWave();
             }
 
             UpdateWaveScore();
 
-        } else if ( PersistentData.GetSettings().ChangeWaveByTime ) {
-            if ( Time.time >= ( PersistentData.GetSettings().TimePerWave * _board.GetCurrentWave() ) ) {
+        } else if ( _settings.WaveIncreasesByTime ) {
+            if ( Time.time >= ( _settings.TimePerWave * _board.GetCurrentWave() ) ) {
                 _board.NextWave();
                 waveStartTime = Time.time;
             }
@@ -320,7 +323,7 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private void UpdateWaveTimer() {
         // Get time left in current wave.
-        float timePerWave = PersistentData.GetSettings().TimePerWave;
+        float timePerWave = _settings.TimePerWave;
         float nextWaveTime = waveStartTime + timePerWave;
         float timeUntilNextWave = nextWaveTime - Time.time;
 
@@ -338,8 +341,8 @@ public class GameManager : MonoBehaviour {
     /// </summary>
     private void UpdateWaveScore() {
         // Get score until next wave
-        int scorePerWave = PersistentData.GetSettings().ScorePerWaveCompletion;
-        float scorePerWaveMultiplier = PersistentData.GetSettings().ScorePerWaveMultiplier;
+        int scorePerWave = _settings.ScorePerWaveIncrease;
+        double scorePerWaveMultiplier = _settings.ScorePerWaveIncreaseMultiplier;
         int scoreRequiredForNextWave = ( int )( scorePerWave * scorePerWaveMultiplier * _board.GetCurrentWave() );
         int scoreUntilNextWave = scoreRequiredForNextWave - _score;
 

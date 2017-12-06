@@ -92,12 +92,8 @@ public static class PersistentData {
             get { return _currentDisasterStartTime; }
             set {
                 // Ensure set value is within the extrema
-                if ( value < _minDisasterStartTime ) {
-                    value = _minDisasterStartTime;
-                } else if ( value > _maxDisasterStartTime ) {
-                    value = _maxDisasterStartTime;
-                }
-
+                value = ( value < _minDisasterStartTime ) ? _minDisasterStartTime : value;
+                value = ( value > _maxDisasterStartTime ) ? _maxDisasterStartTime : value;
                 _currentDisasterDelta = value;
             }
         }
@@ -117,40 +113,26 @@ public static class PersistentData {
         public int DisasterTimeDelta {
             get { return _currentDisasterDelta; }
             set {
-                value = ( value < 1 ) ? 1 : value;
+                value = ( value < _minDisasterDelta ) ? _minDisasterDelta : value;
                 value = ( value > MaxDisasterTimeDelta ) ? MaxDisasterTimeDelta : value;
                 _currentDisasterDelta = value;
             }
         }
 
         /// <value>The max value that can be deducted each wave.</value>
-        public int MaxDisasterTimeDelta {
-            get {
-                return ( InitialDisasterMoveTime - MinDisasterMoveTime );
-            }
-        }
+        public int MaxDisasterTimeDelta { get { return ( InitialDisasterMoveTime - MinDisasterMoveTime ); } }
 
         // Extrema for movement values.
         private int _minDisasterMoveTime = 1;
         private int _maxDisasterMoveTime = 50;
 
         /// <value>The minimum disaster move time. Do not make moves faster!</value>
-        public int MinDisasterMoveTime {
-            get {
-                return _minDisasterMoveTime;
-            }
-        }
+        public int MinDisasterMoveTime { get { return _minDisasterMoveTime; } }
 
         /// <value>The max disaster move time. Do not make moves take longer than this.</value>
-        public int MaxDisasterMoveTime {
-            get {
-                return _maxDisasterMoveTime;
-            }
-        }
+        public int MaxDisasterMoveTime { get { return _maxDisasterMoveTime; } }
 
-        // Max number of active disasters
         private int _currentMaxActiveDisasters = 5;
-
         /// <value>The max active disasters possible.</value>
         public int MaxActiveDisastersPossible { get { return NumberOfBoardColumns; } }
 
@@ -174,12 +156,8 @@ public static class PersistentData {
         public int WavesPerAdditionalDisasters {
             get { return _currentDisasterDelta; }
             set {
-                if ( value < MinWavesPerAdditionalDisaster ) {
-                    value = _minDisasterDelta;
-                } else if ( value > _maxWavesPerDisaster ) {
-                    value = _maxWavesPerDisaster;
-                }
-
+                value = ( value < _minWavesPerDisaster ) ? _minWavesPerDisaster : value;
+                value = ( value > _maxWavesPerDisaster ) ? _maxWavesPerDisaster : value;
                 _currentWavesPerDisaster = value;
             }
         }
@@ -190,7 +168,72 @@ public static class PersistentData {
         /// <value>The max waves per additional disaster being spawned.</value>
         public int MaxWavesPerAdditionalDisaster { get { return _maxWavesPerDisaster; } }
 
-        private int _scorePerDisaster = 100;
+
+        private int _scorePerDisaster = 500;
+        /// <value>The score per disaster.</value>
         public int ScorePerDisaster { get { return _scorePerDisaster; } }
+
+
+        private int _duplicateResources = 10;
+        /// <value>The number of duplicate resource type cards.</value>
+        public int NumOfDuplicateResourceTypes { get { return _duplicateResources; } }
+
+
+        // Determine how waves will work.
+        private bool _scoreIncreasesWave = false;
+        private bool _timeIncreasesWave = false;
+
+        private int _timeDeltaPerWave = 30;
+        private int _minTimeDeltaPerWave = 5;
+        private int _maxTimeDeltaPerWave = 300;
+
+        private int _scoreDeltaPerWave = 15000;
+        private double _scoreDeltaPerWaveMultiplier = 1.5;
+        private double _minScoreDeltaPerWaveMultiplier = 1.0;
+
+        /// <value><c>true</c> if score increases the wave; <c>false</c>, if time increases the wave wave.</value>
+        public bool WaveIncreasesByScore {
+            get { return _scoreIncreasesWave; }
+            set {
+                _scoreIncreasesWave = value;
+                _timeIncreasesWave = !value;
+            }
+        }
+
+        /// <value><c>true</c> if wave increases with time; <c>false</c> if score increases the wave.</value>
+        public bool WaveIncreasesByTime {
+            get { return _timeIncreasesWave; }
+            set {
+                _timeIncreasesWave = value;
+                _scoreIncreasesWave = !value;
+            }
+        }
+
+        /// <value>How long each wave lasts.</value>
+        public int TimePerWave {
+            get { return _timeDeltaPerWave; }
+            set {
+                value = ( value < _minTimeDeltaPerWave ) ? _minTimeDeltaPerWave : value;
+                value = ( value > _maxTimeDeltaPerWave ) ? _maxTimeDeltaPerWave : value;
+                _timeDeltaPerWave = value;
+            }
+        }
+
+        /// <value>Required score to increase wave.</value>
+        public int ScorePerWaveIncrease {
+            get { return _scoreDeltaPerWave; }
+            set { _scoreDeltaPerWave = value; }
+        }
+
+        /// <value>Multiplier for required score each wave.</value>
+        public double ScorePerWaveIncreaseMultiplier {
+            get { return _scoreDeltaPerWaveMultiplier; }
+            set {
+                value = ( value < _minScoreDeltaPerWaveMultiplier ) ? _minScoreDeltaPerWaveMultiplier : value;
+                _minScoreDeltaPerWaveMultiplier = value;
+            }
+        }
+
+
     }
 }
